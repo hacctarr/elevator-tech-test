@@ -41,7 +41,7 @@ def generate_uniform_calls_with_lognormal_passengers(num_floors, duration, total
 
     time_series = {}
     start_time = 0
-    for floor in range(2, num_floors):  # Start from floor 2 since floor 1 is the lobby
+    for floor in range(2, num_floors+1):  # Start from floor 2 since floor 1 is the lobby
         start_time = np.random.randint(0, call_interval)  # Random start time
         # Generate calls at uniform intervals
         for call_time in range(start_time, duration, call_interval):
