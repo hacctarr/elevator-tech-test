@@ -80,7 +80,6 @@ class Elevator:
 
         # Remove the floor from destinations if we've arrived
         if self.current_floor in self.destination_floors:
-            print("time", self.time_in_operation, "elevator", self.elevator_id, "arrived", self.current_floor, "going", self.moving_direction, len(self.passengers), len(self.elevator_system.calls.get(self.current_floor, [])))
             should_open_door = self.drop_off_passengers()
 
         # If there are no destinations to attend to, don't move
