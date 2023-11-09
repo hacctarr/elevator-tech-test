@@ -1,66 +1,73 @@
-# Memorable Technical Test: build an elevator system
+# README for Elevator Simulation Application
 
-In this exercise, you are going to design an elevator system for a skyscraper with 100 floors. The goal is to minimize the amount of time spent between calling an elevator and arriving at the destination floor. 
+## Overview
 
-You will have a 48h window to complete the challenge, but we ask you to not spend more than 4hs working on it. 
+This Python application simulates an elevator system in a building. The simulation includes a set of classes to model passengers, elevators, and the system itself. It features the ability to generate random calls to the elevator with varying numbers of passengers and floors.
 
-If any portion of this project’s requirements is relaxed, please include in your solution which requirements they are with a brief description for why they couldn’t be included. 
+## Features
 
-## Part A: 
+- **Passenger Simulation**: Passengers are simulated with a start floor and destination floor, along with tracking their wait and ride times.
+- **Elevator Operations**: Elevators can move between floors, pick up passengers, and drop them off at their destination floors.
+- **Elevator System Management**: Manages multiple elevators and processes passenger calls in a queued manner.
+- **Statistical Analysis**: Post-simulation, it can report various statistics like average wait time, ride time, and total time for all passengers.
+- **Random Call Generation**: The simulation can generate random calls to the elevator at random times with a number of passengers chosen according to a lognormal distribution.
+- **Reproducibility**: By seeding the random number generator, the simulation can be reproduced with identical outcomes for the same inputs.
 
-In a programming language of your choice, implement one or more functions that takes as input a time series of elevator calls and destinations and outputs a time series of elevator actions. Given constraints: 
- 
- * There are 3 elevator shafts. 
- * The destination floor is known at the time of the elevator call. 
- * There is a lobby on the 1st floor. 
- * It takes 1 second for the elevator to move 1 floor. 
- * It takes 5 seconds to open the elevator door to pick up / drop-off a passenger. This time is 30 seconds for the lobby floor. 
- * A maximum of 10 people can fit into the elevator car at any one time. 
- * Multiple people can enter the elevator during a pick up, and each person can have a different destination floor.
- 
+## Installation
 
-## Part B: 
+To run the elevator simulation, you need Python installed on your system. This application has been developed and tested with Python 3.x. Additionally, NumPy is used for generating random numbers and distributions.
 
-Implement a simulator that generates the time series of elevator calls to feed the function in part A. It should use the following assumptions when generating the inputs: 
+1. Clone the repository or download the source code.
+2. Install NumPy if you haven't already:
 
-Except for the lobby, all other floors have a uniform distribution of number and frequency of calls. The number of passengers per call is random according to a lognormal distribution, rounded to the nearest integer in the range (0, 5]. The random functions should be seeded in such a way that the results of any run can be reproduced if the same seed is used. 
- 
-After the simulator runs, it should produce summary statistics that describe: 
+```sh
+pip install numpy
+```
 
- * The average time spent waiting for an elevator 
- * The average time spent inside an elevator 
- * The average total time spent 
- * The maximum and minimum time any passenger had to wait
- 
+## Usage
 
-## How to deliver your solution:
-1. You should fork this repository and invite the following collaborators:
-- @cfosco
-- @GonzaloGregorio
-- @diegomedinacastillo
-- @andrescanabarro
+1. Import the `ElevatorSystem` and `Passenger` classes in your Python script:
 
-2. Commit your solution to your fork, and send us an email when you're done.
-3. Your fork should contain a markdown document (you can overwrite this README) with an explanation of your solution. Explain any technical decisions, considerations and additional constraints you took into account.
-4. Include detailed instructions on how to build and run the application. Any automation you can add here will be greatly appreciated. 
+```python
+from elevator_simulation import ElevatorSystem, Passenger
+```
 
+2. Initialize the elevator system:
 
-**Additionally**
+```python
+elevator_system = ElevatorSystem(num_elevators=3, num_floors=100)
+```
 
-Engineers at Memorable have a collaborative culture, and we often discuss projects across teams. Consider yourself our colleague on this project, and please don’t hesitate to reach out to us for clarification on any requirements or guidance if you’re having trouble. In other words: feel free to ask questions. 
+3. Generate calls and run the simulation (an example function for generating random calls is provided):
 
-We are looking for high quality work, so we would rather see something that is functionally incomplete but well-designed and tested than something that is of lower quality. Please expect that each decision may be questioned by any engineer in the review discussion and design accordingly. You should expect to actually demo your solution. 
+```python
+simulate_elevator_calls(elevator_system, duration=10000, total_calls=500, seed=42)
+```
 
-If there are additional features or changes that you wuld like to implement with more time, enumerate them in the README.
+4. After running the simulation, retrieve statistics:
 
+```python
+stats = elevator_system.stats()
+print(stats)
+```
 
+5. You can create passengers manually and call the elevator:
 
+```python
+passenger = Passenger(start_floor=1, destination_floor=10)
+elevator_system.call_elevator(passenger)
+```
 
+6. Run the elevator system for a set number of steps:
 
+```python
+elevator_system.run(num_steps=10000)
+```
 
+## Disclaimer
 
+This application is a simulation and should not be used for real-world elevator system design or management without proper expertise and further development.
 
+## Contact
 
-
-
-
+For support or to report issues, please file an issue on the project's issue tracker on GitHub.
