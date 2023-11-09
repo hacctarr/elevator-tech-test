@@ -76,23 +76,24 @@ class Elevator:
         if self.door_timer > 0:
             self.door_timer -= 1
 
-        should_open_door = False
+        did_drop_off = 0
 
         # Remove the floor from destinations if we've arrived
         if self.current_floor in self.destination_floors:
-            should_open_door = self.drop_off_passengers()
+            did_drop_off = self.drop_off_passengers()
 
-        # If there are no destinations to attend to, don't move
-        if not self.destination_floors:
-            self.moving_direction = 0
+        if self.current_floor == self.num_floors:
+            self.moving_direction = -1
+        elif self.current_floor == 1:
+            self.moving_direction = 1
 
         # Before moving, check if we can pick up any passengers
-        should_open_door = self.check_for_pickups()
+        did_pick_up = self.check_for_pickups()
 
         # If the door was closed and we should it, set the timer to close it
-        if not self.is_door_open and should_open_door:
-            self.is_door_open = True
+        if not self.is_door_open and (did_drop_off or did_pick_up):
             self.stops_made += 1
+            self.is_door_open = True
             self.door_timer = LOBBY_TIME if self.current_floor == 1 else DOOR_TIME
 
         # Elif we can move
@@ -112,8 +113,6 @@ class Elevator:
                 else:
                     self.destination_floors.add(self.num_floors)
                     self.moving_direction = 1
-            #     self.destination_floors.add(1)
-            #     self.moving_direction = -1
             # # Move the elevator one floor in its current direction
             next_floor = self.current_floor + self.moving_direction
             if 1 <= next_floor <= self.num_floors:
@@ -130,13 +129,13 @@ class Elevator:
         Returns:
             bool: True if the elevator should open its doors, False otherwise.
         """
-        did_pick_up = False
+        did_pick_up = 0
         for passenger in list(self.elevator_system.calls.get(self.current_floor, [])):
-            if (    ((self.moving_direction >= 0 and passenger.destination_floor >= self.current_floor) or
-                     (self.moving_direction <= 0 and passenger.destination_floor <= self.current_floor))):
+            if (    ((self.moving_direction >= 0 and passenger.destination_floor > self.current_floor) or
+                     (self.moving_direction <= 0 and passenger.destination_floor < self.current_floor))):
                 if self.pick_up(passenger):
                     self.moving_direction = 1 if passenger.destination_floor > self.current_floor else -1
-                    did_pick_up = True
+                    did_pick_up += 1
                 else:
                     break
         return did_pick_up
@@ -167,13 +166,13 @@ class Elevator:
         Returns:
             bool: True if any passengers were dropped off, False otherwise.
         """
-        did_drop_off = False
+        did_drop_off = 0
         for passenger in list(self.passengers):  # Make a copy of the list to modify it while iterating
             if passenger.destination_floor == self.current_floor:
                 passenger.current_floor = self.current_floor
                 passenger.elevator = None
                 self.passengers.remove(passenger)
-                did_drop_off = True
+                did_drop_off += 1
         self.destination_floors.remove(self.current_floor)
         return did_drop_off
 

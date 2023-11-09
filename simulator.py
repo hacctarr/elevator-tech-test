@@ -25,7 +25,7 @@ def generate_random_calls(num_floors, duration, total_calls):
         call_time = np.random.randint(0, duration)  # Time at which the passengers call the elevator
         num_passengers = np.random.randint(1, 6)
         for _ in range(num_passengers):  # Number of passengers calling the elevator at this time
-            passenger = Passenger(1, np.random.randint(2, num_floors))  # Destination floor is chosen randomly
+            passenger = Passenger(1, np.random.randint(2, num_floors+1))  # Destination floor is chosen randomly
             time_series.setdefault(call_time, []).append(passenger)  # Add the passenger to the time series
     return time_series
 
@@ -49,7 +49,7 @@ def generate_uniform_calls_with_lognormal_passengers(num_floors, duration, total
             num_passengers = int(passenger_counts.pop(0)) if len(passenger_counts)>0 else 0
             for _ in range(num_passengers):
                 # Destination floor is chosen randomly
-                passenger = Passenger(floor, np.random.randint(1, num_floors))
+                passenger = Passenger(floor, np.random.randint(1, num_floors+1))
                 # Add the passenger to the time series
                 time_series.setdefault(call_time, []).append(passenger)
     return time_series

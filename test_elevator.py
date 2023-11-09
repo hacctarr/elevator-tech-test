@@ -38,10 +38,11 @@ class TestElevator(unittest.TestCase):
         self.assertNotIn(passenger.destination_floor, self.elevator.destination_floors)
 
         # Test dropping off multiple passengers
+        self.elevator.current_floor = 1
         for i in range(4):
             passenger = Passenger(start_floor=1, destination_floor=i+2)
             self.elevator_system.call_elevator(passenger)
-            self.elevator.pick_up(passenger)
+            self.elevator.step()
         self.elevator.current_floor = 4
         self.assertTrue(self.elevator.drop_off_passengers())
         self.assertEqual(len(self.elevator.passengers), 3)
@@ -69,7 +70,7 @@ class TestElevator(unittest.TestCase):
 
         # Test not picking up a passenger on a different floor
         passenger = Passenger(start_floor=2, destination_floor=3)
-        self.elevator_system.call_queue.append(passenger)
+        self.elevator_system.call_elevator(passenger)
         self.assertFalse(self.elevator.check_for_pickups())
         self.assertNotIn(passenger, self.elevator.passengers)
         self.assertNotIn(passenger.destination_floor, self.elevator.destination_floors)
